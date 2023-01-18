@@ -41,9 +41,17 @@ signs.forEach((sign) => {
     });
 });
 
-const equals = document.querySelector('#equals')
+const equals = document.querySelector('#equals');
 equals.addEventListener('click', () => {
     num1 = operate(num1, signDisplay, num2);
+    num2 = "";
+    signDisplay = "";
+    updateScreen();
+});
+
+const clear = document.querySelector('#clear');
+clear.addEventListener('click', () => {
+    num1 = "";
     num2 = "";
     signDisplay = "";
     updateScreen();
