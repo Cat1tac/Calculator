@@ -1,7 +1,6 @@
 let num1 = "";
-let num2 = "";
+let num2;
 let signDisplay = "";
-const screenDisplay = document.querySelector('.screen');
 
 //Numpad functionality
 const numbers = document.querySelectorAll('.numbers button');
@@ -14,7 +13,7 @@ numbers.forEach((number) => {
             num1 = num1 + number.textContent;
             console.log(num1);
         } else {
-            if (num2 === ""){
+            if (num2 === undefined){
                 num2 = 0;
             }
             num2 = num2 + number.textContent;
@@ -23,16 +22,16 @@ numbers.forEach((number) => {
         updateScreen();
     });
 });
-
+//sign functionality
 const signs = document.querySelectorAll('#operand');
 signs.forEach((sign) => {
     sign.addEventListener('click', () => {
         if (num1 === "") {
             console.log("ERROR")
         } else {
-            if (signDisplay !== "" && num2 !== "") {
-                num1 = operate(num1, signDisplay, num2);
-                num2 = "";
+            if (signDisplay !== "" && num2 !== undefined) {
+                num1 = Math.round(operate(num1, signDisplay, num2)* 10000000000) / 10000000000;
+                num2 = undefined;
             } 
             signDisplay = sign.textContent;
             console.log(signDisplay);
@@ -43,8 +42,8 @@ signs.forEach((sign) => {
 
 const equals = document.querySelector('#equals');
 equals.addEventListener('click', () => {
-    num1 = operate(num1, signDisplay, num2);
-    num2 = "";
+    num1 = Math.round(operate(num1, signDisplay, num2)* 10000000000) / 10000000000;
+    num2 = undefined;
     signDisplay = "";
     updateScreen();
 });
@@ -52,22 +51,26 @@ equals.addEventListener('click', () => {
 const clear = document.querySelector('#clear');
 clear.addEventListener('click', () => {
     num1 = "";
-    num2 = "";
+    num2 = undefined;
     signDisplay = "";
     updateScreen();
 });
 
 function updateScreen() {
-    const result = operate(num1, signDisplay, num2);
+    const result = Math.round(operate(num1, signDisplay, num2)* 10000000000) / 10000000000;
     const textOperations = document.querySelector('#screenOp');
-    if (num2 === ""){
+    if(num1 === ""){
+        textOperations.textContent = "";
+    } else if (num2 === undefined){
         textOperations.textContent = `${Number(num1)} ${signDisplay}`;
     } else {
         textOperations.textContent = `${Number(num1)} ${signDisplay} ${Number(num2)}`;
     }
     const textResult = document.querySelector('#screenRes');
-    if (result === undefined || result === Infinity || num2 === ""){
+    if (result === undefined || num2 === undefined){
         textResult.textContent = "";
+    } else if (result === Infinity){
+        textResult.textContent = "lol";
     } else {
         textResult.textContent = `${result}`;
     }
