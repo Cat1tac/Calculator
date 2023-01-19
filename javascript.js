@@ -3,6 +3,7 @@ let num2;
 let signDisplay = "";
 let result;
 let decimalCounter = 0;
+
 //Numpad functionality
 const numbers = document.querySelectorAll('.numbers #num');
 numbers.forEach((number) => {
@@ -65,7 +66,7 @@ signs.forEach((sign) => {
 
 const equals = document.querySelector('#equals');
 equals.addEventListener('click', () => {
-    if (signDisplay !== "" && num2 !== undefined){
+    if (signDisplay !== "" && num2 !== undefined && signDisplay !== "÷" && num2 !== "00"){
         if (result !== Infinity && result !== NaN){
             num1 = Math.round(operate(num1, signDisplay, num2)* 10000000000) / 10000000000;
             num2 = undefined;
@@ -84,23 +85,26 @@ clear.addEventListener('click', () => {
     updateScreen();
     decimalCounter = 0;
 });
+
 const backspace = document.querySelector('#back');
 backspace.addEventListener('click', () => {
-    if (signDisplay === ""){
-        num1 = (typeof num1 === "number") ? "0" + num1.toString() : num1;
-        num1 = num1.substring(0, num1.length-1);
-        console.log(num1);
-        if (num1.length <= 1) {
-            num1 = undefined;
-        }
-    } else if (signDisplay !== "" && num2 === undefined || num2 === 0){
-        signDisplay = signDisplay.substring(0, signDisplay.length-1)
-        console.log(signDisplay);
-    } else if (num2 !== undefined) {
-        num2 = num2.substring(0, num2.length-1);
-        console.log(num2);
-        if (num2.length <= 1) {
-            num2 = undefined;
+    if(num1 !== undefined){
+        if (signDisplay === ""){
+            num1 = (typeof num1 === "number") ? "0" + num1.toString() : num1;
+            num1 = num1.substring(0, num1.length-1);
+            console.log(num1);
+            if (num1.length <= 1) {
+                num1 = undefined;
+            }
+        } else if (signDisplay !== "" && num2 === undefined || num2 === 0){
+            signDisplay = signDisplay.substring(0, signDisplay.length-1)
+            console.log(signDisplay);
+        } else if (num2 !== undefined) {
+            num2 = num2.substring(0, num2.length-1);
+            console.log(num2);
+            if (num2.length <= 1) {
+                num2 = undefined;
+            }
         }
     }
     updateScreen();
@@ -119,7 +123,7 @@ function updateScreen() {
     const textResult = document.querySelector('#screenRes');
     if (result === undefined || num2 === undefined){
         textResult.textContent = "";
-    } else if (result === Infinity){
+    } else if (result === Infinity || signDisplay === "÷" && num2 === "00"){
         textResult.textContent = "Can't divide by Zero";
     } else {
         textResult.textContent = `${result}`;
