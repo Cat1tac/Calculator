@@ -78,16 +78,36 @@ equals.addEventListener('click', () => {
 
 const clear = document.querySelector('#clear');
 clear.addEventListener('click', () => {
-    num1 = "";
+    num1 = undefined;
     num2 = undefined;
     signDisplay = "";
     updateScreen();
     decimalCounter = 0;
 });
+const backspace = document.querySelector('#back');
+backspace.addEventListener('click', () => {
+    if (signDisplay === ""){
+        num1 = (typeof num1 === "number") ? "0" + num1.toString() : num1;
+        num1 = num1.substring(0, num1.length-1);
+        console.log(num1);
+        if (num1.length <= 1) {
+            num1 = undefined;
+        }
+    } else if (signDisplay !== "" && num2 === undefined || num2 === 0){
+        signDisplay = signDisplay.substring(0, signDisplay.length-1)
+        console.log(signDisplay);
+    } else if (num2 !== undefined) {
+        num2 = num2.substring(0, num2.length-1);
+        console.log(num2);
+        if (num2.length <= 1) {
+            num2 = undefined;
+        }
+    }
+    updateScreen();
+});
 
 function updateScreen() {
     result = Math.round(operate(num1, signDisplay, num2)* 10000000000) / 10000000000;
-    console.log(result);
     const textOperations = document.querySelector('#screenOp');
     if(num1 === undefined){
         textOperations.textContent = "";
@@ -127,7 +147,7 @@ function operate(a, operator, b) {
     a = (typeof num1 === "string") ? Number(num1) : num1;
     b = Number(num2);
     operator = signDisplay;
-    if (signDisplay === '+') {
+    if (operator === '+') {
         console.log(add(a, b));
         return add(a, b);
     } else if (signDisplay === '-') {
