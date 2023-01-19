@@ -1,13 +1,14 @@
-let num1 = "";
+let num1;
 let num2;
 let signDisplay = "";
-
+let result;
+let decimalCounter = 0;
 //Numpad functionality
-const numbers = document.querySelectorAll('.numbers button');
+const numbers = document.querySelectorAll('.numbers #num');
 numbers.forEach((number) => {
     number.addEventListener('click', () => {
         if (signDisplay === ""){
-            if (num1 === ""){
+            if (num1 === undefined){
                 num1 = 0;
             }
             num1 = num1 + number.textContent;
@@ -22,11 +23,32 @@ numbers.forEach((number) => {
         updateScreen();
     });
 });
+
+const decimal = document.querySelector('#decimal');
+decimal.addEventListener('click', () => {
+    if (decimalCounter < 1){
+        if (signDisplay === ""){
+            if (num1 === undefined){
+                num1 = 0;
+            }
+            num1 = num1 + decimal.textContent;
+            console.log(num1);
+        } else {
+            if (num2 === undefined){
+                num2 = 0;
+            }
+            num2 = num2 + decimal.textContent;
+            console.log(num2);
+        }
+    }
+    decimalCounter++;
+    updateScreen();
+});
 //sign functionality
 const signs = document.querySelectorAll('#operand');
 signs.forEach((sign) => {
     sign.addEventListener('click', () => {
-        if (num1 === "") {
+        if (num1 === undefined) {
             console.log("ERROR")
         } else {
             if (signDisplay !== "" && num2 !== undefined) {
@@ -37,15 +59,21 @@ signs.forEach((sign) => {
             console.log(signDisplay);
         }
         updateScreen();
+        decimalCounter = 0;
     });
 });
 
 const equals = document.querySelector('#equals');
 equals.addEventListener('click', () => {
-    num1 = Math.round(operate(num1, signDisplay, num2)* 10000000000) / 10000000000;
-    num2 = undefined;
-    signDisplay = "";
-    updateScreen();
+    if (signDisplay !== "" && num2 !== undefined){
+        if (result !== Infinity && result !== NaN){
+            num1 = Math.round(operate(num1, signDisplay, num2)* 10000000000) / 10000000000;
+            num2 = undefined;
+            signDisplay = "";
+            updateScreen();
+            decimalCounter = 0;
+        }
+    } 
 });
 
 const clear = document.querySelector('#clear');
@@ -54,12 +82,14 @@ clear.addEventListener('click', () => {
     num2 = undefined;
     signDisplay = "";
     updateScreen();
+    decimalCounter = 0;
 });
 
 function updateScreen() {
-    const result = Math.round(operate(num1, signDisplay, num2)* 10000000000) / 10000000000;
+    result = Math.round(operate(num1, signDisplay, num2)* 10000000000) / 10000000000;
+    console.log(result);
     const textOperations = document.querySelector('#screenOp');
-    if(num1 === ""){
+    if(num1 === undefined){
         textOperations.textContent = "";
     } else if (num2 === undefined){
         textOperations.textContent = `${Number(num1)} ${signDisplay}`;
@@ -70,7 +100,7 @@ function updateScreen() {
     if (result === undefined || num2 === undefined){
         textResult.textContent = "";
     } else if (result === Infinity){
-        textResult.textContent = "lol";
+        textResult.textContent = "Can't divide by Zero";
     } else {
         textResult.textContent = `${result}`;
     }
